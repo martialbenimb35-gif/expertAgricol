@@ -1,12 +1,10 @@
 import os
-import pymysql
 from flask import Flask, render_template, request
+import pymysql
 
 app = Flask(__name__)
 
-# --- CONFIGURATION DE LA CONNEXION ---
 def get_db_connection():
-    # os.environ.get récupère les variables "violettes" que tu as mises sur Railway
     return pymysql.connect(
         host=os.environ.get('MYSQLHOST'),
         user=os.environ.get('MYSQLUSER'),
@@ -18,36 +16,38 @@ def get_db_connection():
 
 @app.route('/', methods=['GET', 'POST'])
 def index():
+    # 1. On initialise toujours les variables à None (Réinitialisation)
     diagnostic = None
     solution = None
-    selected_symptome = None
+    symptomes = []
 
-    # Connexion à la base pour récupérer la liste des symptômes
-    connection = get_db_connection()
     try:
+        connection = get_db_connection()
         with connection.cursor() as cursor:
+            # 2. On récupère la liste des symptômes pour le menu déroulant
             cursor.execute("SELECT DISTINCT symptome FROM rules")
             symptomes = cursor.fetchall()
 
+            # 3. On ne cherche le résultat QUE si l'utilisateur a cliqué sur le bouton
             if request.method == 'POST':
                 selected_symptome = request.form.get('symptome')
-                # Recherche du diagnostic correspondant
-                cursor.execute("SELECT diagnostic, solution FROM rules WHERE symptome = %s", (selected_symptome,))
-                result = cursor.fetchone()
-                if result:
-                    diagnostic = result['diagnostic']
-                    solution = result['solution']
-    finally:
+                if selected_symptome:
+                    sql = "SELECT diagnostic, solution FROM rules WHERE symptome = %s"
+                    cursor.execute(sql, (selected_symptome,))
+                    result = cursor.fetchone()
+                    if result:
+                        diagnostic = result['diagnostic']
+                        solution = result['solution']
         connection.close()
+    except Exception as e:
+        print(f"Erreur de connexion : {e}")
 
-   # Remplace symptomes=symptomes par regles=symptomes
+    # 4. On envoie les données au HTML
+    # Si c'est un GET (rafraîchissement), diagnostic et solution seront None
     return render_template('index.html', 
-                       regles=symptomes, 
-                       diagnostic=diagnostic, 
-                       solution=solution)
+                           symptomes=symptomes, 
+                           diagnostic=diagnostic, 
+                           solution=solution)
+
 if __name__ == '__main__':
-    # TRÈS IMPORTANT pour Railway : utiliser le port donné par l'environnement
-    port = int(os.environ.get("PORT", 5000))
-    app.run(host='0.0.0.0', port=port)
-
-
+    app.run(debug=True)
