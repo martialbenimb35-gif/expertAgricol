@@ -50,3 +50,5 @@ if __name__ == '__main__':
     # TRÈS IMPORTANT pour Railway : utiliser le port donné par l'environnement
     port = int(os.environ.get("PORT", 5000))
     app.run(host='0.0.0.0', port=port)
+
+
