@@ -40,12 +40,11 @@ def index():
     finally:
         connection.close()
 
+   # Remplace symptomes=symptomes par regles=symptomes
     return render_template('index.html', 
-                           symptomes=symptomes, 
-                           diagnostic=diagnostic, 
-                           solution=solution, 
-                           selected_symptome=selected_symptome)
-
+                       regles=symptomes, 
+                       diagnostic=diagnostic, 
+                       solution=solution)
 if __name__ == '__main__':
     # TRÈS IMPORTANT pour Railway : utiliser le port donné par l'environnement
     port = int(os.environ.get("PORT", 5000))
