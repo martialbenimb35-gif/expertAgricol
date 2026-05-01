@@ -1,40 +1,52 @@
-from flask import Flask, render_template, request
+import os
 import pymysql
+from flask import Flask, render_template, request
 
 app = Flask(__name__)
 
-
+# --- CONFIGURATION DE LA CONNEXION ---
 def get_db_connection():
+    # os.environ.get récupère les variables "violettes" que tu as mises sur Railway
     return pymysql.connect(
-        host='localhost',
-        user='root',     
-        password='',      # Ton mot de passe (vide par défaut sur XAMPP)
-        database='agri_db',
+        host=os.environ.get('MYSQLHOST'),
+        user=os.environ.get('MYSQLUSER'),
+        password=os.environ.get('MYSQLPASSWORD'),
+        database=os.environ.get('MYSQLDATABASE'),
+        port=int(os.environ.get('MYSQLPORT', 3306)),
         cursorclass=pymysql.cursors.DictCursor
     )
 
 @app.route('/', methods=['GET', 'POST'])
 def index():
+    diagnostic = None
+    solution = None
+    selected_symptome = None
+
+    # Connexion à la base pour récupérer la liste des symptômes
     connection = get_db_connection()
-    resultat = None
-    
     try:
         with connection.cursor() as cursor:
-            # 1. Charger toutes les règles pour remplir la liste déroulante
-            cursor.execute("SELECT * FROM rules")
-            base_regles = cursor.fetchall()
+            cursor.execute("SELECT DISTINCT symptome FROM rules")
+            symptomes = cursor.fetchall()
 
             if request.method == 'POST':
-                symptome_choisi = request.form.get('symptome')
-                # 2. Moteur d'inférence : Chercher le diagnostic dans la BDD
-                sql = "SELECT * FROM rules WHERE symptome = %s"
-                cursor.execute(sql, (symptome_choisi,))
-                resultat = cursor.fetchone()
+                selected_symptome = request.form.get('symptome')
+                # Recherche du diagnostic correspondant
+                cursor.execute("SELECT diagnostic, solution FROM rules WHERE symptome = %s", (selected_symptome,))
+                result = cursor.fetchone()
+                if result:
+                    diagnostic = result['diagnostic']
+                    solution = result['solution']
     finally:
         connection.close()
-    
-    return render_template('index.html', regles=base_regles, resultat=resultat)
+
+    return render_template('index.html', 
+                           symptomes=symptomes, 
+                           diagnostic=diagnostic, 
+                           solution=solution, 
+                           selected_symptome=selected_symptome)
 
 if __name__ == '__main__':
-    app.run(debug=True)
-    
+    # TRÈS IMPORTANT pour Railway : utiliser le port donné par l'environnement
+    port = int(os.environ.get("PORT", 5000))
+    app.run(host='0.0.0.0', port=port)
