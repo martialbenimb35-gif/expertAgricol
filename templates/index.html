@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AgriExpert - Guide Intelligent</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+
+<div class="container">
+    <h1>🌱 AgriExpert</h1>
+    <h3>De : Ben Jubilé et Eric Kambale</h3>
+    <p class="subtitle">Votre assistant de diagnostic agricole intelligent</p>
+
+    <form method="POST">
+        <label for="symptome">Qu'observez-vous sur votre plantation ?</label>
+        <select name="symptome" id="symptome" required>
+            <option value="" disabled selected>Choisir un symptôme...</option>
+            {% for r in regles %}
+                <option value="{{ r.symptome }}">{{ r.symptome|capitalize }}</option>
+            {% endfor %}
+        </select>
+        <button type="submit">Analyser la situation</button>
+    </form>
+
+    {% if resultat %}
+    <div class="result-card">
+        <h3>Diagnostic : {{ resultat.diagnostic }}</h3>
+        <p><strong>Analyse :</strong> Le système a détecté des signes caractéristiques de {{ resultat.diagnostic.lower() }}.</p>
+        <p class="solution"><strong>Solution recommandée :</strong> {{ resultat.solution }}</p>
+    </div>
+    {% endif %}
+</div>
+
+</body>
+</html>
