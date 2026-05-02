@@ -24,16 +24,6 @@
         </select>
         <button type="submit">Analyser la situation</button>
     </form>
-
-    <!-- {% if resultat %}
-    <div class="result-card">
-        <h3>Diagnostic : {{ resultat.diagnostic }}</h3>
-        <p><strong>Analyse :</strong> Le système a détecté des signes caractéristiques de {{ resultat.diagnostic.lower() }}.</p>
-        <p class="solution"><strong>Solution recommandée :</strong> {{ resultat.solution }}</p>
-    </div>
-    {% endif %}
-</div> -->
-
 {% if diagnostic %}
 <div class="result-card">
     <h3>Diagnostic : {{ diagnostic }}</h3>
@@ -41,6 +31,5 @@
     <p class="solution"><strong>Solution recommandée :</strong> {{ solution }}</p>
 </div>
 {% endif %}
-
 </body>
 </html>

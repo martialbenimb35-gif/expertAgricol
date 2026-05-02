@@ -11,7 +11,6 @@ def get_db_connection():
         password=os.environ.get('MYSQLPASSWORD'),
         database=os.environ.get('MYSQLDATABASE'),
         port=int(os.environ.get('MYSQLPORT', 3306)),
-        # On force le DictCursor pour que le HTML puisse lire "r.symptome"
         cursorclass=pymysql.cursors.DictCursor
     )
 
@@ -41,7 +40,8 @@ def index():
     except Exception as e:
         print(f"ERREUR : {e}")
 
+   # Remplace symptomes=symptomes par regles=symptomes
     return render_template('index.html', 
-                           symptomes=symptomes, 
-                           diagnostic=diagnostic, 
-                           solution=solution)
+                       regles=symptomes, 
+                       diagnostic=diagnostic, 
+                       solution=solution)
