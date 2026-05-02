@@ -3,8 +3,8 @@
 > **Système Expert de Diagnostic Agricole & Recommandations** > Un projet d'ingénierie logicielle développé à l'**Université Shalom de Bunia (USB)**.
 
 [![Version](https://img.shields.io/badge/version-1.0.0-blue.svg?style=for-the-badge)](https://github.com/ericknzambi44)
-[![Stack-Erick](https://img.shields.io/badge/Backend-Django%20|%20Rust-green?style=for-the-badge)](https://github.com/ericknzambi44)
-[![Stack-Ben](https://img.shields.io/badge/Mobile-Flutter-02569B?style=for-the-badge&logo=flutter)](https://github.com/)
+[![Stack-Erick](https://img.shields.io/badge/Backend-Python%20|%20flask-green?style=for-the-badge)](https://github.com/ericknzambi44)
+[![Stack-Ben](https://img.shields.io/badge/Mobile-Flutter-02569B?style=for-the-badge&logo)](https://github.com/)
 [![UML](https://img.shields.io/badge/Design-UML%20Certified-orange?style=for-the-badge)](https://github.com/ericknzambi44)
 
 ## 📋 Présentation
